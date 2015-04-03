@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "gulp && nodemon index.js"
+    "start": "gulp"
   },
   "repository": {
     "type": "git",
@@ -25,13 +25,16 @@
   },
   "homepage": "https://github.com/arthuralee/nito",
   "dependencies": {
-    "express": "^4.12.3"
+    "express": "^4.12.3",
+    "react": "^0.13.1",
+    "react-router": "^0.13.2"
   },
   "devDependencies": {
     "browser-sync": "^2.5.2",
     "browserify": "^9.0.6",
     "del": "^1.1.1",
     "gulp": "^3.8.11",
+    "gulp-nodemon": "^2.0.2",
     "reactify": "^1.1.0",
     "vinyl-source-stream": "^1.1.0"
   }
