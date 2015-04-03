@@ -1,4 +1,4 @@
-# Nito
+# Nito [![Build Status](https://travis-ci.org/arthuralee/nito.svg?branch=master)](https://travis-ci.org/arthuralee/nito)
 
 Nito is a prototype of a human/machine hybrid remote proctoring system. It is created as part of the 05-571 Undergraduate Project in HCI at Carnegie Mellon University
 
