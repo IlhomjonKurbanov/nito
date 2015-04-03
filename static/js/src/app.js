@@ -84,29 +84,6 @@ var Login = React.createClass({
   }
 });
 
-var Dashboard = React.createClass({
-  mixins: [ Authentication() ],
-
-  render: function () {
-    var token = auth.getToken();
-    return (
-      <div>
-        <h1>Dashboard</h1>
-        <p>You made it!</p>
-        <p>{token}</p>
-      </div>
-    );
-  }
-});
-
-var Proctors = React.createClass({
-  mixins: [ Authentication('proctor') ],
-
-  render: function () {
-    return <h1>Proctors only page</h1>;
-  }
-});
-
 var Error = React.createClass({
   render: function () {
     return <h1>There was an error</h1>;
@@ -124,16 +101,18 @@ var Logout = React.createClass({
 });
 
 var Views = {
-  Student: require('./views/Student/Home.js')
+  Dashboard: require('./views/Dashboard.js'),
+  Student: require('./views/Student/Home.js'),
+  Proctor: require('./views/Proctor/Home.js')
 };
 
 var routes = (
   <Route handler={App}>
     <Route name="login" handler={Login}/>
     <Route name="logout" handler={Logout}/>
-    <Route name="dashboard" handler={Dashboard}/>
+    <Route name="dashboard" handler={Views.Dashboard}/>
     <Route name="students" handler={Views.Student}/>
-    <Route name="proctors" handler={Proctors}/>
+    <Route name="proctors" handler={Views.Proctor}/>
     <Route name="error" handler={Error}/>
   </Route>
 );
