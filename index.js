@@ -1,5 +1,6 @@
 // Express server - main server side file
 
+var path = require('path');
 var express = require('express');
 var app = express();
 
@@ -14,7 +15,7 @@ app.use(express.static('static'));
 
 // Route all requests to static/index.html
 app.get('*', function(req, res) {
-  res.sendFile('static/index.html');
+  res.sendFile(path.join(__dirname, 'static/index.html'));
 });
 
 // Start the server
