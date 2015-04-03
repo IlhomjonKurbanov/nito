@@ -1,0 +1,38 @@
+{
+  "name": "nito",
+  "version": "0.0.1",
+  "description": "Nito - prototype of a remote proctoring system",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "gulp && nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arthuralee/nito.git"
+  },
+  "keywords": [
+    "nito",
+    "cmu",
+    "proxor",
+    "proctor",
+    "remote"
+  ],
+  "author": "CMU HCI Group",
+  "license": "Apache v2.0",
+  "bugs": {
+    "url": "https://github.com/arthuralee/nito/issues"
+  },
+  "homepage": "https://github.com/arthuralee/nito",
+  "dependencies": {
+    "express": "^4.12.3"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.5.2",
+    "browserify": "^9.0.6",
+    "del": "^1.1.1",
+    "gulp": "^3.8.11",
+    "reactify": "^1.1.0",
+    "vinyl-source-stream": "^1.1.0"
+  }
+}
