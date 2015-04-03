@@ -1,8 +1,8 @@
 var React = require('react');
-var Authentication = require('../../lib/ACL.js');
+var ACL = require('../../lib/ACL.js');
 
 module.exports = React.createClass({
-  mixins: [ Authentication('student') ],
+  mixins: [ ACL('student') ],
 
   render: function () {
     return <h1>Students only page</h1>;

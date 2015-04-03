@@ -5,8 +5,8 @@ module.exports = function(acl) {
     statics: {
       willTransitionTo: function (transition) {
         var nextPath = transition.path;
-        if (!auth.loggedIn()) {
-          transition.redirect('/login',{},
+        if (!auth.signedIn()) {
+          transition.redirect('/signin',{},
             { 'r' : nextPath });
         } else if (acl && auth.acl() !== acl) {
           transition.redirect('/error');

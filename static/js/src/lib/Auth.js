@@ -1,5 +1,5 @@
 module.exports = {
-  login: function (email, pass, cb) {
+  signin: function (email, pass, cb) {
     cb = arguments[arguments.length - 1];
     if (localStorage.token) {
       if (cb) cb(true);
@@ -23,13 +23,13 @@ module.exports = {
     return localStorage.token;
   },
 
-  logout: function (cb) {
+  signout: function (cb) {
     delete localStorage.token;
     if (cb) cb();
     this.onChange(false);
   },
 
-  loggedIn: function () {
+  signedIn: function () {
     return !!localStorage.token;
   },
 

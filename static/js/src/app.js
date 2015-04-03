@@ -8,29 +8,29 @@ var Authentication = require('./lib/ACL.js');
 var App = React.createClass({
   getInitialState: function () {
     return {
-      loggedIn: auth.loggedIn()
+      signedIn: auth.signedIn()
     };
   },
 
-  setStateOnAuth: function (loggedIn) {
+  setStateOnAuth: function (signedIn) {
     this.setState({
-      loggedIn: loggedIn
+      signedIn: signedIn
     });
   },
 
   componentWillMount: function () {
     auth.onChange = this.setStateOnAuth;
-    auth.login();
+    auth.signin();
   },
 
   render: function () {
-    var loginOrOut = this.state.loggedIn ?
-      <Link to="logout">Log out</Link> :
-      <Link to="login">Sign in</Link>;
+    var signInOrOut = this.state.signedIn ?
+      <Link to="signout">Sign out</Link> :
+      <Link to="signin">Sign in</Link>;
     return (
       <div>
         <ul>
-          <li>{loginOrOut}</li>
+          <li>{signInOrOut}</li>
           <li><Link to="dashboard">Dashboard (everyone)</Link></li>
           <li><Link to="students">Students only</Link></li>
           <li><Link to="proctors">Proctors only</Link></li>
@@ -41,7 +41,7 @@ var App = React.createClass({
   }
 });
 
-var Login = React.createClass({
+var Signin = React.createClass({
 
   contextTypes: {
     router: React.PropTypes.func
@@ -59,8 +59,8 @@ var Login = React.createClass({
     var nextPath = router.getCurrentQuery().r;
     var email = this.refs.email.getDOMNode().value;
     var pass = this.refs.pass.getDOMNode().value;
-    auth.login(email, pass, function (loggedIn) {
-      if (!loggedIn)
+    auth.signin(email, pass, function (signedIn) {
+      if (!signedIn)
         return this.setState({ error: true });
 
       if (nextPath) {
@@ -72,15 +72,60 @@ var Login = React.createClass({
   },
 
   render: function () {
-    var errors = this.state.error ? <p>Bad login information</p> : '';
+    var errors = this.state.error ? <p className="error">The email or password you entered was incorrect.</p> : '';
     return (
-      <form onSubmit={this.handleSubmit}>
-        <label><input ref="email" placeholder="email" /></label>
-        <label><input ref="pass" placeholder="password" /></label> (hint: pw)<br/>
-        <button type="submit">login</button>
-        {errors}
-      </form>
+      <div style={this.styles.container}>
+        <div className="card" style={this.styles.card}>
+          <h1 style={this.styles.title}>Sign In</h1>
+          {errors}
+          <form style={this.styles.form} onSubmit={this.handleSubmit}>
+            <div>
+              <input ref="email" placeholder="Email" />
+            </div>
+            <div>
+              <input ref="pass" placeholder="Password is pw" />
+            </div>
+            <button style={this.styles.signinBtn} type="submit">Sign In</button>
+            {/*
+            <div>
+              <label><input type="checkbox" /> Remember Me</label>
+            </div>
+            <div>
+              <a>Sign Up</a>
+              <a>Forgot password?</a>
+            </div>
+            */}
+          </form>
+        </div>
+      </div>
     );
+  },
+
+  styles: {
+    container: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    },
+    card: {
+      width: 320,
+      margin: '30px auto'
+    },
+    title: {
+      marginBottom: 20
+    },
+    form: {
+      paddingTop: 20
+    },
+    signinBtn: {
+      width: '100%',
+      marginTop: 20
+    }
   }
 });
 
@@ -90,13 +135,13 @@ var Error = React.createClass({
   }
 });
 
-var Logout = React.createClass({
+var Signout = React.createClass({
   componentDidMount: function () {
-    auth.logout();
+    auth.signout();
   },
 
   render: function () {
-    return <p>You are now logged out</p>;
+    return <p>You are now signed out</p>;
   }
 });
 
@@ -108,8 +153,8 @@ var Views = {
 
 var routes = (
   <Route handler={App}>
-    <Route name="login" handler={Login}/>
-    <Route name="logout" handler={Logout}/>
+    <Route name="signin" handler={Signin}/>
+    <Route name="signout" handler={Signout}/>
     <Route name="dashboard" handler={Views.Dashboard}/>
     <Route name="students" handler={Views.Student}/>
     <Route name="proctors" handler={Views.Proctor}/>

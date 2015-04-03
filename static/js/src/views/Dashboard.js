@@ -1,8 +1,9 @@
 var React = require('react');
-var Authentication = require('../lib/ACL.js');
+var ACL = require('../lib/ACL.js');
+var auth = require('../lib/Auth.js')
 
 module.exports = React.createClass({
-  mixins: [ Authentication() ],
+  mixins: [ ACL() ],
 
   render: function () {
     var token = auth.getToken();
