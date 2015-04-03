@@ -1,6 +1,9 @@
 var React = require('react');
 var Router = require('react-router');
+var auth = require('./lib/Auth.js');
 var { Route, RouteHandler, Link } = Router;
+
+var Authentication = require('./lib/ACL.js');
 
 var App = React.createClass({
   getInitialState: function () {
@@ -38,22 +41,6 @@ var App = React.createClass({
   }
 });
 
-var Authentication = function(acl) {
-  return {
-    statics: {
-      willTransitionTo: function (transition) {
-        var nextPath = transition.path;
-        if (!auth.loggedIn()) {
-          transition.redirect('/login',{},
-            { 'r' : nextPath });
-        } else if (acl && auth.acl() !== acl) {
-          transition.redirect('/error');
-        }
-      }
-    }
-  };
-};
-
 var Login = React.createClass({
 
   contextTypes: {
@@ -89,7 +76,7 @@ var Login = React.createClass({
     return (
       <form onSubmit={this.handleSubmit}>
         <label><input ref="email" placeholder="email" /></label>
-        <label><input ref="pass" placeholder="password" /></label> (hint: password1)<br/>
+        <label><input ref="pass" placeholder="password" /></label> (hint: pw)<br/>
         <button type="submit">login</button>
         {errors}
       </form>
@@ -109,14 +96,6 @@ var Dashboard = React.createClass({
         <p>{token}</p>
       </div>
     );
-  }
-});
-
-var Students = React.createClass({
-  mixins: [ Authentication('student') ],
-
-  render: function () {
-    return <h1>Students only page</h1>;
   }
 });
 
@@ -144,77 +123,16 @@ var Logout = React.createClass({
   }
 });
 
-
-// Fake authentication lib
-
-var auth = {
-  login: function (email, pass, cb) {
-    cb = arguments[arguments.length - 1];
-    if (localStorage.token) {
-      if (cb) cb(true);
-      this.onChange(true);
-      return;
-    }
-    pretendRequest(email, pass, function (res) {
-      if (res.authenticated) {
-        localStorage.token = res.token;
-        localStorage.acl = res.acl;
-        if (cb) cb(true);
-        this.onChange(true);
-      } else {
-        if (cb) cb(false);
-        this.onChange(false);
-      }
-    }.bind(this));
-  },
-
-  getToken: function () {
-    return localStorage.token;
-  },
-
-  logout: function (cb) {
-    delete localStorage.token;
-    if (cb) cb();
-    this.onChange(false);
-  },
-
-  loggedIn: function () {
-    return !!localStorage.token;
-  },
-
-  acl: function() {
-    return localStorage.acl;
-  },
-
-  onChange: function () {}
+var Views = {
+  Student: require('./views/Student/Home.js')
 };
-
-function pretendRequest(email, pass, cb) {
-  setTimeout(function () {
-    if (email === 'angela@proxor.com' && pass === 'pw') {
-      cb({
-        authenticated: true,
-        acl: 'proctor',
-        token: Math.random().toString(36).substring(7)
-      });
-    } else if (email === 'james@school.edu' && pass === 'pw') {
-      cb({
-        authenticated: true,
-        acl: 'student',
-        token: Math.random().toString(36).substring(7)
-      });
-    } else {
-      cb({authenticated: false});
-    }
-  }, 0);
-}
 
 var routes = (
   <Route handler={App}>
     <Route name="login" handler={Login}/>
     <Route name="logout" handler={Logout}/>
     <Route name="dashboard" handler={Dashboard}/>
-    <Route name="students" handler={Students}/>
+    <Route name="students" handler={Views.Student}/>
     <Route name="proctors" handler={Proctors}/>
     <Route name="error" handler={Error}/>
   </Route>

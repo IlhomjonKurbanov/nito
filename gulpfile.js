@@ -34,8 +34,7 @@ gulp.task('build', ['clean'], function() {
       console.error(error);
     })
     .pipe(source('app.js'))
-    .pipe(gulp.dest(paths.dest))
-    .pipe(browserSync.reload({stream:true}));
+    .pipe(gulp.dest(paths.dest));
 });
 
 // start nodemon to start our node server
