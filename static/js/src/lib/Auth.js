@@ -42,13 +42,13 @@ module.exports = {
 
 function pretendRequest(email, pass, cb) {
   setTimeout(function () {
-    if (email === 'angela@proxor.com' && pass === 'pw') {
+    if (email === 'angela.warner@proxor.com' && pass === 'pw') {
       cb({
         authenticated: true,
         acl: 'proctor',
         token: Math.random().toString(36).substring(7)
       });
-    } else if (email === 'james@school.edu' && pass === 'pw') {
+    } else if (email === 'jlibby@asu.edu' && pass === 'pw') {
       cb({
         authenticated: true,
         acl: 'student',

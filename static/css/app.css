@@ -50,3 +50,40 @@ button {
 .error {
   color: #d20e0e;
 }
+.valign-middle {
+  vertical-align: middle;
+}
+
+/* header bar business */
+.headerbar-dropdown {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: arrow;
+  height: 100%;
+  padding: 0 10px;
+}
+  .headerbar-dropdown:hover {
+    background-color: rgba(255,255,255,0.1);
+  }
+  .headerbar-dropdown:hover .dropdown-menu {
+    display: block;
+  }
+  .headerbar-dropdown .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #333;
+    width: 100%;
+    padding: 10px 0;
+  }
+  .headerbar-dropdown .dropdown-menu li a {
+    color: #aaa;
+    text-decoration: none;
+    padding: 6px 15px;
+    display: block;
+  }
+  .headerbar-dropdown .dropdown-menu li a:hover {
+    background-color: rgba(255,255,255,0.1);
+  }
