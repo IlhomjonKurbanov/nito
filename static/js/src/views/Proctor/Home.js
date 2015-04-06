@@ -3,6 +3,8 @@ var ACL = require('../../lib/ACL.js');
 var Router = require('react-router');
 var { Link } = Router;
 
+var GridView = require('./GridView.js');
+
 module.exports = React.createClass({
   mixins: [ ACL('proctor') ],
 
@@ -26,7 +28,7 @@ module.exports = React.createClass({
           </div>
         </header>
         <div style={this.styles.main}>
-          <h1>Proctors only page</h1>
+          <GridView />
         </div>
       </div>);
   },
@@ -75,8 +77,8 @@ module.exports = React.createClass({
     main: {
       order: 2,
       flexGrow: 1,
-      width: '100%',
-      backgroundColor: '#222'
+      display: 'flex',
+      width: '100%'
     }
   }
 });
