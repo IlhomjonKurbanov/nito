@@ -31,6 +31,7 @@ gulp.task('build', ['clean'], function() {
     .transform(['reactify', {es6: true}]) // es6 oh yeah!
     .bundle()
     .on('error', function(error) {
+      delete error.stream;
       console.error(error);
     })
     .pipe(source('app.js'))
