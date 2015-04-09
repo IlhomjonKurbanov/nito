@@ -5,20 +5,78 @@ Object.assign = require('object-assign');
 module.exports = React.createClass({
   mixins: [ ACL('proctor') ],
 
+  getInitialState: function() {
+    return {
+      screens: [
+        {
+          id: '30278125',
+          warn: false
+        },
+        {
+          id: '30273381',
+          warn: false
+        },
+        {
+          id: '30273392',
+          warn: false
+        },
+        {
+          id: '30278144',
+          warn: false
+        },
+        {
+          id: '30279313',
+          warn: false
+        },
+        {
+          id: '30285943',
+          warn: false
+        },
+        {
+          id: '30483627',
+          warn: false
+        },
+        {
+          id: '30572947',
+          warn: false
+        },
+        {
+          id: '30298943',
+          warn: false
+        },
+      ],
+      currentMenuShown: -1
+    };
+  },
   render: function () {
-    var videos = [];
-
-    var ids = ['30278125','30273381','30273392','30278144','30279313','30285943','30483627','30572947','30298943'];
-    ids.forEach(function(id){
-      videos.push(<VideoScreen id={id} />);
-    });
+    var screens = this.state.screens.map(function(screen){
+      return (<VideoScreen id={screen.id}
+                          key={screen.id}
+                          warn={screen.warn}
+                          showMenu={this.showMenu}
+                          isMenuVisible={this.state.currentMenuShown == screen.id}
+                          hideMenu={this.hideMenu}
+                          reportId={this.reportId} />);
+    }.bind(this));
 
     return (
       <div style={this.styles.container}>
-        {videos}
+        {screens}
       </div>);
   },
-
+  showMenu: function(id) {
+    this.setState({
+      currentMenuShown: id
+    })
+  },
+  hideMenu: function() {
+    this.setState({
+      currentMenuShown: -1
+    });
+  },
+  reportId: function(id, reason) {
+    console.log(`Report ${id} for ${reason} to server`);
+  },
   styles: {
     container: {
       display: 'flex',
@@ -40,8 +98,7 @@ var VideoScreen = React.createClass({
   },
   getInitialState: function() {
     return {
-      warn: false,
-      menuShow: false
+      warn: false
     }
   },
   render: function() {
@@ -55,15 +112,19 @@ var VideoScreen = React.createClass({
     }, this.styles.video);
 
     var menu;
-    if (this.state.menuShow) {
+    if (this.props.isMenuVisible) {
       menu = (
         <div style={this.styles.menu}>
-          menu
+          <ReportButton id="people" onClick={this._reportButtonClick}>People</ReportButton>
+          <ReportButton id="clearDesk" onClick={this._reportButtonClick}>Clear desk</ReportButton>
+          <ReportButton id="outView" onClick={this._reportButtonClick}>Out of view</ReportButton>
+          <ReportButton id="other" onClick={this._reportButtonClick}>Other</ReportButton>
+          <ReportButton id="cancel" onClick={this._reportButtonClick}>Cancel</ReportButton>
         </div>);
     }
 
     return (
-      <div style={frameStyle} onClick={this._onVideoClick}>
+      <div style={frameStyle} onClick={this._click}>
         <div style={videoStyle}>
           {menu}
         </div>
@@ -72,10 +133,14 @@ var VideoScreen = React.createClass({
         </div>
       </div>);
   },
-  _onVideoClick: function() {
-    this.setState({
-      menuShow: true
-    });
+  _click: function() {
+    this.props.showMenu(this.props.id);
+  },
+  _reportButtonClick: function(btnClicked) {
+    if (btnClicked !== 'cancel') {
+      this.props.reportId(this.props.id, btnClicked);
+    }
+    this.props.hideMenu(this.props.id);
   },
   styles: {
     frame: {
@@ -97,6 +162,50 @@ var VideoScreen = React.createClass({
       background: 'rgba(0,0,0,0.5)',
       width: '100%',
       height: '100%',
+      display: 'flex',
+      flexWrap: 'wrap',
+      justifyContent: 'center',
+      alignItems: 'center'
     }
+  }
+});
+
+
+var ReportButton = React.createClass({
+  _btnStyle: {
+    people: {
+      order: 1,
+      width: '43%'
+    },
+    clearDesk: {
+      order: 2,
+      width: '43%'
+    },
+    outView: {
+      order: 3,
+      width: '43%'
+    },
+    other: {
+      order: 4,
+      width: '43%'
+    },
+    cancel: {
+      order: 5,
+      width: '90%'
+    }
+  },
+  render: function() {
+    var buttonStyle = this._btnStyle[this.props.id];
+    return (
+      <button onClick={this._click} style={buttonStyle} className="gridview-reportButton">
+        {this.props.children}
+      </button>
+    );
+  },
+  _click: function(event) {
+    if(this.props.onClick) {
+      this.props.onClick(this.props.id);
+    }
+    event.stopPropagation();
   }
 });

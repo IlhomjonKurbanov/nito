@@ -11,6 +11,9 @@ input, button {
   font-weight: 300;
   color: #555;
 }
+button {
+  -webkit-user-select: none;
+}
 
 /* Global high-level styles */
 h1 {
@@ -88,3 +91,21 @@ button {
   .headerbar-dropdown .dropdown-menu li a:hover {
     background-color: rgba(255,255,255,0.1);
   }
+
+/* # Grid view */
+
+/* ## Report buttons */
+.gridview-reportButton {
+  border: 1px solid #fff;
+  background: none;
+  font-size: 16px;
+  font-weight: 400px;
+  margin: 2%;
+  height: 25%;
+}
+.gridview-reportButton:hover {
+  background-color: rgba(255,255,255,0.4);
+}
+.gridview-reportButton:active {
+  background-color: rgba(255,255,255,0.2);
+}
