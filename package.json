@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/arthuralee/nito",
   "dependencies": {
+    "binaryjs": "^0.2.1",
     "express": "^4.12.3",
     "object-assign": "^2.0.0",
     "react": "^0.13.1",

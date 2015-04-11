@@ -50,18 +50,21 @@ module.exports = React.createClass({
           warn: false
         },
       ],
-      currentMenuShown: -1
+      currentMenuShown: -1,
+      warn: []
     };
   },
   render: function () {
     var screens = this.state.screens.map(function(screen){
       return (<VideoScreen id={screen.id}
                           key={screen.id}
-                          warn={screen.warn}
+                          warn={this.state.warn.indexOf(screen.id) !== -1}
                           showMenu={this.showMenu}
                           isMenuVisible={this.state.currentMenuShown == screen.id}
                           hideMenu={this.hideMenu}
-                          reportId={this.reportId} />);
+                          reportId={this.reportId}
+                          duration={600}
+                          examName="SDE 001 C" />);
     }.bind(this));
 
     return (
@@ -79,8 +82,25 @@ module.exports = React.createClass({
       currentMenuShown: -1
     });
   },
-  reportId: function(id, reason) {
-    console.log(`Report ${id} for ${reason} to server`);
+  reportId: function(id, reason, time) {
+    // make screen red for a second
+    var newWarn = this.state.warn;
+    newWarn.push(id);
+    this.setState({
+      warn: newWarn
+    });
+
+    // hmm how to do this better
+    window.setTimeout(function() {
+      var newWarn = this.state.warn;
+      var i = newWarn.indexOf(id);
+      newWarn.splice(i, 1);
+      this.setState({
+        warn: newWarn
+      })
+    }.bind(this), 1000);
+
+    console.log(`Report ${id} for ${reason} at ${time} to server`);
   },
   styles: {
     container: {
@@ -98,17 +118,39 @@ var VideoScreen = React.createClass({
   getDefaultProps: function() {
     return {
       width: 300,
-      height: 200
+      height: 200,
+      duration: 0,
+      warn: false
     }
   },
   getInitialState: function() {
     return {
-      warn: false
+      src: '',
+      currentTime: 0,
+      duration: 0
     }
+  },
+  componentDidMount: function() {
+    var vidTag = this.refs.video.getDOMNode();
+
+    // mute the video
+    vidTag.muted = true;
+
+    // get total duration
+    this.setState({
+      duration: vidTag.duration
+    })
+
+    // timeupdate
+    vidTag.addEventListener('timeupdate', function() {
+      this.setState({
+        currentTime: vidTag.currentTime
+      });
+    }.bind(this));
   },
   render: function() {
     var frameStyle = Object.assign({
-      background: this.state.warn ? '#ca252f' : ''
+      background: this.props.warn ? '#ca252f' : ''
     }, this.styles.frame);
     var videoStyle = Object.assign({
       width: this.props.width,
@@ -131,12 +173,14 @@ var VideoScreen = React.createClass({
       <div style={frameStyle} onClick={this._click}>
         <div style={this.styles.videoWrap}>
           <video style={videoStyle}
+                  ref="video"
                   autoPlay="autoplay"
-                  src={`/media/video/${this.props.id}.mov`} />
+                  src={`/stream/video/${this.props.id}.webm`} />
           {menu}
         </div>
         <div style={this.styles.caption}>
-          <span>{this.props.id}</span>
+          <span>{this.props.id} - {this.props.examName}</span>
+          <span>{secondToMMSS(this.state.currentTime)}/-{secondToMMSS(this.props.duration - this.state.currentTime)}</span>
         </div>
       </div>);
   },
@@ -145,14 +189,15 @@ var VideoScreen = React.createClass({
   },
   _reportButtonClick: function(btnClicked) {
     if (btnClicked !== 'cancel') {
-      this.props.reportId(this.props.id, btnClicked);
+      this.props.reportId(this.props.id, btnClicked, this.state.currentTime);
     }
     this.props.hideMenu(this.props.id);
   },
   styles: {
     frame: {
       margin: 10,
-      padding: 3
+      padding: 3,
+      transition: 'background 0.2s'
     },
     videoWrap: {
       position: 'relative'
@@ -160,7 +205,9 @@ var VideoScreen = React.createClass({
     caption: {
       color: '#aaa',
       fontSize: 12,
-      marginTop: 3
+      marginTop: 3,
+      display: 'flex',
+      justifyContent: 'space-between'
     },
     menu: {
       position: 'absolute',
@@ -215,3 +262,14 @@ var ReportButton = React.createClass({
     event.stopPropagation();
   }
 });
+
+var secondToMMSS = function(s) {
+  s = Math.round(s);
+  var minutes = parseInt( s / 60 );
+  var seconds = s % 60;
+
+  var minStr = minutes < 10 ? '0' + minutes : minutes;
+  var secStr = seconds  < 10 ? '0' + seconds : seconds;
+
+  return `${minStr}:${secStr}`;
+}
