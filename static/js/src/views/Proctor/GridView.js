@@ -4,32 +4,37 @@ Object.assign = require('object-assign');
 
 module.exports = React.createClass({
   mixins: [ ACL('proctor') ],
-
+  getDefaultProps: function() {
+    return {
+      rows: 3,
+      cols: 3
+    }
+  },
   getInitialState: function() {
     return {
       screens: [
         {
-          id: '30278125',
+          id: 'nocheat-1',
           warn: false
         },
         {
-          id: '30273381',
+          id: 'nocheat-2',
           warn: false
         },
         {
-          id: '30273392',
+          id: 'nocheat-3',
           warn: false
         },
         {
-          id: '30278144',
+          id: 'nocheat-4',
           warn: false
         },
         {
-          id: '30279313',
+          id: 'nocheat-5',
           warn: false
         },
         {
-          id: '30285943',
+          id: 'nocheat-6',
           warn: false
         },
         {
@@ -107,8 +112,7 @@ var VideoScreen = React.createClass({
     }, this.styles.frame);
     var videoStyle = Object.assign({
       width: this.props.width,
-      height: this.props.height,
-      backgroundImage: `url(/images/video/${this.props.id}.jpg)`
+      height: this.props.height
     }, this.styles.video);
 
     var menu;
@@ -125,7 +129,10 @@ var VideoScreen = React.createClass({
 
     return (
       <div style={frameStyle} onClick={this._click}>
-        <div style={videoStyle}>
+        <div style={this.styles.videoWrap}>
+          <video style={videoStyle}
+                  autoPlay="autoplay"
+                  src={`/media/video/${this.props.id}.mov`} />
           {menu}
         </div>
         <div style={this.styles.caption}>
@@ -147,10 +154,8 @@ var VideoScreen = React.createClass({
       margin: 10,
       padding: 3
     },
-    video: {
-      position: 'relative',
-      backgroundSize: 'cover',
-      backgroundPosition: 'center'
+    videoWrap: {
+      position: 'relative'
     },
     caption: {
       color: '#aaa',
@@ -165,7 +170,8 @@ var VideoScreen = React.createClass({
       display: 'flex',
       flexWrap: 'wrap',
       justifyContent: 'center',
-      alignItems: 'center'
+      alignItems: 'center',
+      top:0,
     }
   }
 });

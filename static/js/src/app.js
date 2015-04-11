@@ -31,7 +31,6 @@ var App = React.createClass({
       <div>
         <ul>
           <li>{signInOrOut}</li>
-          <li><Link to="dashboard">Dashboard (everyone)</Link></li>
           <li><Link to="test">Students only</Link></li>
           <li><Link to="proctor">Proctors only</Link></li>
         </ul>
@@ -46,7 +45,7 @@ var Views = {
   Errors: require('./views/Errors.js'),
   Dashboard: require('./views/Dashboard.js'),
   Student: require('./views/Student/Home.js'),
-  Proctor: require('./views/Proctor/Home.js')
+  Proctor: require('./views/Proctor/index.js')
 };
 
 var routes = (
@@ -55,7 +54,11 @@ var routes = (
     <Route name="signout" handler={Views.Auth.Signout}/>
     <Route name="dashboard" handler={Views.Dashboard}/>
     <Route name="test" handler={Views.Student}/>
-    <Route name="proctor" handler={Views.Proctor}/>
+    <Route name="proctor" handler={Views.Proctor}>
+      <Route name="proctor-a" path="a" handler={Views.Proctor.A}/>
+      <Route name="proctor-b" path="b" handler={Views.Proctor.B}/>
+      <DefaultRoute handler={Views.Proctor.Home}/>
+    </Route>
     <Route name="error" handler={Views.Errors.http403}/>
     <NotFoundRoute handler={Views.Errors.http404} />
   </Route>
