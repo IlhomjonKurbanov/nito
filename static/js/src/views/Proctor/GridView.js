@@ -41,17 +41,32 @@ module.exports = React.createClass({
           warn: false
         },
         {
-          id: '30572947',
+          id: 'cheat-2',
           warn: false
         },
         {
-          id: '30298943',
-          warn: false
-        },
+          id: 'cheat-3'
+        }
       ],
       currentMenuShown: -1,
-      warn: []
+      warn: [],
+      videoPlaying: false
     };
+  },
+  componentDidMount: function() {
+    var self = this;
+    this._socket = io.connect('http://localhost:8080/');
+    this._socket.on('start', function(data) {
+      self.setState({
+        videoPlaying: true,
+        proctorId: data.proctorId
+      });
+    });
+    this._socket.on('pause', function(data) {
+      self.setState({
+        videoPlaying: false
+      });
+    });
   },
   render: function () {
     var screens = this.state.screens.map(function(screen){
@@ -63,7 +78,8 @@ module.exports = React.createClass({
                           hideMenu={this.hideMenu}
                           reportId={this.reportId}
                           duration={600}
-                          examName="SDE 001 C" />);
+                          examName="SDE 001 C"
+                          videoPlaying={this.state.videoPlaying} />);
     }.bind(this));
 
     // split into rows
@@ -107,6 +123,12 @@ module.exports = React.createClass({
       })
     }.bind(this), 1000);
 
+    this._socket.emit('report', {
+      ttId: id,
+      reason: reason,
+      time: time,
+      proctorId: this.state.proctorId
+    });
     console.log(`Report ${id} for ${reason} at ${time} to server`);
   },
   styles: {
@@ -160,6 +182,16 @@ var VideoScreen = React.createClass({
       });
     }.bind(this));
   },
+  componentDidUpdate: function(prevProps, prevState) {
+    var vidTag = this.refs.video.getDOMNode();
+
+    // use play/paused props to play or pause video
+    if (this.props.videoPlaying) {
+      vidTag.play();
+    } else {
+      vidTag.pause();
+    }
+  },
   render: function() {
     var frameStyle = Object.assign({
       background: this.props.warn ? '#ca252f' : ''
@@ -174,8 +206,8 @@ var VideoScreen = React.createClass({
       menu = (
         <div style={this.styles.menu}>
           <ReportButton id="people" onClick={this._reportButtonClick}>People</ReportButton>
-          <ReportButton id="clearDesk" onClick={this._reportButtonClick}>Clear desk</ReportButton>
-          <ReportButton id="outView" onClick={this._reportButtonClick}>Out of view</ReportButton>
+          <ReportButton id="environment" onClick={this._reportButtonClick}>Environment</ReportButton>
+          <ReportButton id="eyeHead" onClick={this._reportButtonClick}>Eye/head</ReportButton>
           <ReportButton id="other" onClick={this._reportButtonClick}>Other</ReportButton>
           <ReportButton id="cancel" onClick={this._reportButtonClick}>Cancel</ReportButton>
         </div>);
@@ -186,7 +218,6 @@ var VideoScreen = React.createClass({
         <div style={this.styles.videoWrap}>
           <video style={videoStyle}
                   ref="video"
-                  autoPlay="autoplay"
                   src={`/stream/video/${this.props.id}.webm`} />
           {menu}
         </div>
@@ -235,9 +266,11 @@ var VideoScreen = React.createClass({
   }
 });
 
-
 var ReportButton = React.createClass({
   _btnStyle: {
+    button: {
+      width: 150
+    },
     people: {
       order: 1,
       width: '43%'
@@ -260,7 +293,7 @@ var ReportButton = React.createClass({
     }
   },
   render: function() {
-    var buttonStyle = this._btnStyle[this.props.id];
+    var buttonStyle = Object.assign(this._btnStyle.button, this._btnStyle[this.props.id]);
     return (
       <button onClick={this._click} style={buttonStyle} className="gridview-reportButton">
         {this.props.children}

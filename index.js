@@ -27,4 +27,20 @@ app.get('*', function(req, res) {
 
 
 // Start the server
-var server = http.createServer(app).listen(8080);
+var server = http.createServer(app);
+server.listen(8080);
+
+// Socekt io
+var io = require('socket.io')(server);
+
+io.on('connection', function(socket) {
+  socket.on('control-start', function(data) {
+    io.emit('start', data);
+  });
+  socket.on('control-pause', function(data) {
+    io.emit('pause');
+  });
+  socket.on('report', function(data) {
+    io.emit('report', data);
+  });
+});

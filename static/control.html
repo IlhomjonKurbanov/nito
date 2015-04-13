@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Control panel</title>
+</head>
+<body>
+  <input type="text" id="proctorId" placeholder="proctorId" />
+  <button onclick="start()">Start</button>
+  <button onclick="pause()">Pause</button>
+  <ul id="log">
+
+  </ul>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    var socket = io.connect('http://localhost:8080');
+
+    function start(event) {
+      socket.emit('control-start', {
+        proctorId: document.getElementById('proctorId').value
+      });
+    }
+
+    function pause(event) {
+      socket.emit('control-pause');
+    }
+
+    socket.on('report', function(data) {
+      var li = document.createElement('li');
+      li.innerHTML = JSON.stringify(data);
+
+      document.getElementById('log').appendChild(li);
+    });
+
+  </script>
+</body>
+</html>
