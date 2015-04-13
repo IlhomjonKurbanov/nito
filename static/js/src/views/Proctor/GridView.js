@@ -13,39 +13,39 @@ module.exports = React.createClass({
     return {
       screens: [
         {
-          id: 'nocheat-1',
+          id: '1039',
           warn: false
         },
         {
-          id: 'nocheat-2',
+          id: '1048',
           warn: false
         },
         {
-          id: 'nocheat-3',
+          id: '1058',
           warn: false
         },
         {
-          id: 'nocheat-4',
+          id: '1742',
           warn: false
         },
         {
-          id: 'nocheat-5',
+          id: '3819',
           warn: false
         },
         {
-          id: 'nocheat-6',
+          id: '2293',
           warn: false
         },
         {
-          id: 'cheat-1',
+          id: '1849',
           warn: false
         },
         {
-          id: 'cheat-2',
+          id: '3823',
           warn: false
         },
         {
-          id: 'cheat-3'
+          id: '3932'
         }
       ],
       currentMenuShown: -1,
