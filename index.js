@@ -28,7 +28,7 @@ app.get('*', function(req, res) {
 
 // Start the server
 var server = http.createServer(app);
-server.listen(8080);
+server.listen(process.env.PORT || 8080);
 
 // Socekt io
 var io = require('socket.io')(server);
