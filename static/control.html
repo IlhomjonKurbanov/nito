@@ -3,17 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <title>Control panel</title>
+
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
   <input type="text" id="proctorId" placeholder="proctorId" />
-  <button onclick="start()">Start</button>
-  <button onclick="pause()">Pause</button>
+  <button class="btn btn-primary" onclick="start()">Start</button>
+  <button class="btn btn-primary" onclick="pause()">Pause</button>
+  <textarea id="logsave" disabled></textarea>
   <ul id="log">
 
   </ul>
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
+    var events = [];
+
     var socket = io.connect(window.location.origin);
 
     function start(event) {
@@ -28,7 +33,15 @@
 
     socket.on('report', function(data) {
       var li = document.createElement('li');
-      li.innerHTML = JSON.stringify(data);
+      li.innerHTML = '<strong>TT:</strong>' + data.ttId +
+                     '<strong>Reason:</strong>' + data.reason +
+                     '<strong>Time:</strong>' + data.time;
+
+      events.push(data);
+
+      document.getElementById.innerText = JSON.stringify(data);
+      localStorage['log'] = JSON.stringify(data);
+
 
       document.getElementById('log').appendChild(li);
     });
