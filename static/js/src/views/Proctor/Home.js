@@ -6,8 +6,8 @@ module.exports = React.createClass({
   render: function () {
     return (
       <div style={this.styles.container}>
-        <Link to="proctor-a">Proctor A</Link>
-        <Link to="proctor-b">Proctor B</Link>
+        <Link to="proctor-a" className="round-btn">Proctor A</Link>
+        <Link to="proctor-b" className="round-btn">Proctor B</Link>
       </div>);
   },
 

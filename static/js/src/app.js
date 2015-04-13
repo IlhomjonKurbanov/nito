@@ -24,13 +24,16 @@ var App = React.createClass({
   },
 
   render: function () {
-    var signInOrOut = this.state.signedIn ?
-      <Link to="signout">Sign out</Link> :
-      <Link to="signin">Sign in</Link>;
+    return <RouteHandler/>;
+  }
+});
+
+var Home = React.createClass({
+  render: function() {
     return (
       <div>
         <ul>
-          <li>{signInOrOut}</li>
+          <li><Link to="signout">Sign out</Link></li>
           <li><Link to="test">Students only</Link></li>
           <li><Link to="proctor">Proctors only</Link></li>
         </ul>
@@ -38,7 +41,7 @@ var App = React.createClass({
       </div>
     );
   }
-});
+})
 
 var Views = {
   Auth: require('./views/Auth.js'),
@@ -60,6 +63,7 @@ var routes = (
       <DefaultRoute handler={Views.Proctor.Home}/>
     </Route>
     <Route name="error" handler={Views.Errors.http403}/>
+    <DefaultRoute handler={Home}/>
     <NotFoundRoute handler={Views.Errors.http404} />
   </Route>
 );
