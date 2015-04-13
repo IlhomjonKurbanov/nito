@@ -42,7 +42,7 @@ module.exports = {
 
 function pretendRequest(email, pass, cb) {
   setTimeout(function () {
-    if ((email === 'angela.warner@proxor.com' || email === 'aw') && pass === 'pw') {
+    if ((email === 'angela.warner@proxor.com' || email === 'aw@proxor.com') && pass === 'pw') {
       cb({
         authenticated: true,
         acl: 'proctor',
