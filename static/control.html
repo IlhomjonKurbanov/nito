@@ -31,21 +31,25 @@
       socket.emit('control-pause');
     }
 
+    function updateTextbox() {
+      document.getElementById('logmsg').innerText = localStorage['log'];
+    }
+
     socket.on('report', function(data) {
       var li = document.createElement('li');
       li.innerHTML = '<strong>TT:</strong>' + data.ttId +
-                     '<strong>Reason:</strong>' + data.reason +
-                     '<strong>Time:</strong>' + data.time;
+                     ' <strong>Reason:</strong>' + data.reason +
+                     ' <strong>Time:</strong>' + data.time;
 
       events.push(data);
 
-      document.getElementById.innerText = JSON.stringify(data);
       localStorage['log'] = JSON.stringify(data);
-
+      updateTextbox();
 
       document.getElementById('log').appendChild(li);
     });
 
+    updateTextbox();
   </script>
 </body>
 </html>
