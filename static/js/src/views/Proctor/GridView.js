@@ -55,7 +55,7 @@ module.exports = React.createClass({
   },
   componentDidMount: function() {
     var self = this;
-    this._socket = io.connect('http://localhost:8080/');
+    this._socket = io.connect(window.location.origin);
     this._socket.on('start', function(data) {
       self.setState({
         videoPlaying: true,
