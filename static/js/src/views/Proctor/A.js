@@ -6,7 +6,7 @@ var GridView = require('./GridView.js');
 
 module.exports = React.createClass({
   render: function () {
-    return <GridView rows={3} cols={3} />;
+    return <GridView cols={3} />;
   },
 
   styles: {

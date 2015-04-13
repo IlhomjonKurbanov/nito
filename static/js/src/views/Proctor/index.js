@@ -11,7 +11,7 @@ var index = React.createClass({
   render: function () {
     return (
       <div style={this.styles.container}>
-        <Header title="Title here" />
+        <Header title="Proctor Station" />
         <div style={this.styles.main}>
           <RouteHandler />
         </div>

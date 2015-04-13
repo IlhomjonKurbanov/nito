@@ -6,7 +6,6 @@ module.exports = React.createClass({
   mixins: [ ACL('proctor') ],
   getDefaultProps: function() {
     return {
-      rows: 3,
       cols: 3
     }
   },
@@ -38,7 +37,7 @@ module.exports = React.createClass({
           warn: false
         },
         {
-          id: '30483627',
+          id: 'cheat-1',
           warn: false
         },
         {
@@ -67,9 +66,17 @@ module.exports = React.createClass({
                           examName="SDE 001 C" />);
     }.bind(this));
 
+    // split into rows
+    var rows = splitarray(screens, this.props.cols).map(function(row) {
+      return (
+        <div style={this.styles.row}>
+          {row}
+        </div>);
+    }.bind(this));
+
     return (
       <div style={this.styles.container}>
-        {screens}
+        {rows}
       </div>);
   },
   showMenu: function(id) {
@@ -105,11 +112,16 @@ module.exports = React.createClass({
   styles: {
     container: {
       display: 'flex',
-      flexWrap: 'wrap',
       alignContent: 'center',
       justifyContent: 'center',
+      flexDirection: 'column',
       flex: 1,
       backgroundColor: '#222'
+    },
+    row: {
+      display: 'flex',
+      alignContent: 'center',
+      justifyContent: 'center',
     }
   }
 });
@@ -272,4 +284,14 @@ var secondToMMSS = function(s) {
   var secStr = seconds  < 10 ? '0' + seconds : seconds;
 
   return `${minStr}:${secStr}`;
+}
+
+var splitarray = function(input, spacing) {
+  var output = [];
+
+  for (var i = 0; i < input.length; i += spacing) {
+    output[output.length] = input.slice(i, i + spacing);
+  }
+
+  return output;
 }
