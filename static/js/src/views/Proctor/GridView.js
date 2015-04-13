@@ -218,7 +218,7 @@ var VideoScreen = React.createClass({
         <div style={this.styles.videoWrap}>
           <video style={videoStyle}
                   ref="video"
-                  src={`http://${id}.stream.nito.me/stream/video/${this.props.id}.webm`} />
+                  src={`http://${this.props.id}.stream.nito.me/stream/video/${this.props.id}.webm`} />
           {menu}
         </div>
         <div style={this.styles.caption}>
