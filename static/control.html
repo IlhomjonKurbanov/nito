@@ -32,7 +32,7 @@
     }
 
     function updateTextbox() {
-      document.getElementById('logmsg').innerText = localStorage['log'];
+      document.getElementById('logsave').innerText = localStorage['log'];
     }
 
     socket.on('report', function(data) {
@@ -43,7 +43,7 @@
 
       events.push(data);
 
-      localStorage['log'] = JSON.stringify(data);
+      localStorage['log'] = JSON.stringify(events);
       updateTextbox();
 
       document.getElementById('log').appendChild(li);
