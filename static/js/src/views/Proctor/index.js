@@ -7,7 +7,6 @@ var Header = require('../Header.js');
 var GridView = require('./GridView.js');
 
 var index = React.createClass({
-  mixins: [ ACL('proctor') ],
   render: function () {
     return (
       <div style={this.styles.container}>

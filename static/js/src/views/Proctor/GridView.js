@@ -13,7 +13,7 @@ module.exports = React.createClass({
     return {
       screens: [
         {
-          id: '1039',
+          id: '3819',
           warn: false
         },
         {
@@ -29,7 +29,7 @@ module.exports = React.createClass({
           warn: false
         },
         {
-          id: '3819',
+          id: 'live',
           warn: false
         },
         {
@@ -161,35 +161,75 @@ var VideoScreen = React.createClass({
     return {
       src: '',
       currentTime: 0,
-      duration: 0
+      duration: 0,
+      timerStarted: false
     }
+  },
+  _startTimer: function() {
+    if (this.state.timerStarted) return;
+
+    var start = new Date().getTime();
+
+    window.setInterval(function() {
+      var time = new Date().getTime() - start;
+      this.setState({currentTime: time / 1000});
+    }.bind(this), 200);
+
+    this.setState({timerStarted: true});
   },
   componentDidMount: function() {
     var vidTag = this.refs.video.getDOMNode();
+    var vidContainerTag = this.refs.videoContainer.getDOMNode();
 
-    // mute the video
-    vidTag.muted = true;
-
-    // get total duration
-    this.setState({
-      duration: vidTag.duration
-    })
-
-    // timeupdate
-    vidTag.addEventListener('timeupdate', function() {
-      this.setState({
-        currentTime: vidTag.currentTime
+    if (this.props.id === 'live') {
+      var webrtc = new SimpleWebRTC({
+        // the id/element dom element that will hold "our" video
+        localVideoEl: '',
+        // the id/element dom element that will hold remote videos
+        remoteVideosEl: '',
+        // immediately ask for camera access
+        autoRequestMedia: true
       });
-    }.bind(this));
+      webrtc.on('readyToCall', function () {
+        // you can name it anything
+        webrtc.joinRoom('nito_test');
+      });
+
+      webrtc.on('videoAdded', function (video, peer) {
+        video.style.width = this.props.width + 'px';
+        video.style.height = this.props.height + 'px';
+        vidContainerTag.removeChild(vidContainerTag.querySelector('video'));
+        vidContainerTag.appendChild(video);
+      }.bind(this));
+
+    } else {
+      // mute the video
+      vidTag.muted = true;
+
+      // get total duration
+      this.setState({
+        duration: vidTag.duration
+      })
+
+      // timeupdate
+      vidTag.addEventListener('timeupdate', function() {
+        this.setState({
+          currentTime: vidTag.currentTime
+        });
+      }.bind(this));
+    }
   },
   componentDidUpdate: function(prevProps, prevState) {
-    var vidTag = this.refs.video.getDOMNode();
-
-    // use play/paused props to play or pause video
-    if (this.props.videoPlaying) {
-      vidTag.play();
+    if (this.props.id !== 'live') {
+      var vidTag = this.refs.video.getDOMNode();
+      // use play/paused props to play or pause video
+      if (this.props.videoPlaying) {
+        vidTag.play();
+      } else {
+        vidTag.pause();
+      }
     } else {
-      vidTag.pause();
+        if (this.props.videoPlaying) this._startTimer();
     }
   },
   render: function() {
@@ -215,7 +255,7 @@ var VideoScreen = React.createClass({
 
     return (
       <div style={frameStyle} onClick={this._click}>
-        <div style={this.styles.videoWrap}>
+        <div style={this.styles.videoWrap} ref="videoContainer">
           <video style={videoStyle}
                   ref="video"
                   src={`http://${this.props.id}.stream.nito.me/stream/video/${this.props.id}.webm`} />
